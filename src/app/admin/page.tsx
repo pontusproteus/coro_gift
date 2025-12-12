@@ -16,6 +16,17 @@ export default async function AdminPage() {
           </div>
         </form>
       </section>
+      <section className="space-y-2">
+        <h3 className="text-xl">Revoke voucher</h3>
+        <form action="/api/vouchers/revoke" method="post" className="card p-4 space-y-3 max-w-xl mx-auto">
+          <input name="discord_user_id" className="w-full text-black rounded px-3 py-2" placeholder="Discord User ID (optional)" />
+          <input name="voucher_id" className="w-full text-black rounded px-3 py-2" placeholder="Voucher ID (optional)" />
+          <div className="text-sm opacity-80">Provide either Discord User ID or Voucher ID.</div>
+          <div className="flex justify-center">
+            <button className="btn-secondary">Revoke</button>
+          </div>
+        </form>
+      </section>
     </div>
   )
 }
