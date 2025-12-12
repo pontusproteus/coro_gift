@@ -8,8 +8,28 @@ import { encrypt } from '@/lib/crypto'
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!session || !(session.user && (session.user as any).isAdmin)) return NextResponse.json({ error: 'forbidden' }, { status: 403 })
-  const body = await req.text()
-  const records = parse(body, { columns: true, skip_empty_lines: true }) as any[]
+  const form = await req.formData()
+  const csv = String(form.get('csv') || '').trim()
+  if (!csv) return NextResponse.json({ created: 0 })
+  let records = [] as any[]
+  try {
+    records = parse(csv, { columns: true, skip_empty_lines: true }) as any[]
+    if (records.length === 0) {
+      records = parse(csv, {
+        columns: ['code', 'value_amount', 'currency'],
+        skip_empty_lines: true
+      }) as any[]
+    }
+  } catch {
+    try {
+      records = parse(csv, {
+        columns: ['code', 'value_amount', 'currency'],
+        skip_empty_lines: true
+      }) as any[]
+    } catch {
+      records = []
+    }
+  }
   const uploader = await prisma.user.findUnique({ where: { discordUserId: (session.user as any).discordUserId } })
   const toCreate = records.map(r => ({
     codeCiphertext: encrypt(String(r.code)),
@@ -18,7 +38,6 @@ export async function POST(req: NextRequest) {
     status: 'available' as const,
     uploadedByAdminId: uploader?.id || null
   }))
-  await prisma.voucher.createMany({ data: toCreate })
-  return NextResponse.json({ created: toCreate.length })
+  const result = await prisma.voucher.createMany({ data: toCreate })
+  return NextResponse.json({ created: result.count })
 }
-
