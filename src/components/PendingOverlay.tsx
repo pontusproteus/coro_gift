@@ -3,13 +3,14 @@ import { useEffect, useRef, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import Image from 'next/image'
 
-export default function PendingOverlay({ minMs = 800 }: { minMs?: number }) {
+export default function PendingOverlay({ minMs = 800, active }: { minMs?: number, active?: boolean }) {
   const { pending } = useFormStatus()
+  const isPending = typeof active === 'boolean' ? active : pending
   const [visible, setVisible] = useState(false)
   const startedAt = useRef<number | null>(null)
 
   useEffect(() => {
-    if (pending) {
+    if (isPending) {
       startedAt.current = Date.now()
       setVisible(true)
     } else if (startedAt.current !== null) {
@@ -23,7 +24,7 @@ export default function PendingOverlay({ minMs = 800 }: { minMs?: number }) {
     } else {
       setVisible(false)
     }
-  }, [pending, minMs])
+  }, [isPending, minMs])
 
   if (!visible) return null
 
@@ -33,4 +34,3 @@ export default function PendingOverlay({ minMs = 800 }: { minMs?: number }) {
     </div>
   )
 }
-

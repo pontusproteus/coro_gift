@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import PendingOverlay from '@/components/PendingOverlay'
+import RevealCodeButton from '@/components/RevealCodeButton'
 
 export default async function Page() {
   await new Promise(resolve => setTimeout(resolve, 600))
@@ -49,10 +50,7 @@ export default async function Page() {
               <div className="btn-cta inline-block w-full sm:w-auto">Bag secured ❄️</div>
             </div>
             <div>Voucher: ••••••••••</div>
-            <form action="/api/voucher/reveal" method="post">
-              <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded w-full sm:w-auto">Reveal code</button>
-              <PendingOverlay />
-            </form>
+            <RevealCodeButton />
           </div>
         )}
         <div className="space-x-3 text-center pt-2">

@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
+import RevealCodeButton from '@/components/RevealCodeButton'
 
 export default async function RedeemPage() {
   await new Promise(resolve => setTimeout(resolve, 600))
@@ -35,9 +36,7 @@ export default async function RedeemPage() {
       {voucher && (
         <div className="space-y-2 max-w-md mx-auto">
           <div>Voucher: ••••••••••</div>
-          <form action="/api/voucher/reveal" method="post">
-            <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded w-full sm:w-auto">Reveal code</button>
-          </form>
+          <RevealCodeButton />
         </div>
       )}
     </div>
