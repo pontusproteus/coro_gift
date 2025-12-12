@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 
 export default async function RedeemPage() {
+  await new Promise(resolve => setTimeout(resolve, 600))
   const session = await getServerSession(authOptions)
   if (!session) return <div>Login required</div>
   const user = await prisma.user.findUnique({ where: { discordUserId: (session.user as any).discordUserId } })
@@ -27,15 +28,15 @@ export default async function RedeemPage() {
     <div className="space-y-4 text-center">
       <h2 className="text-2xl">Secure the bag</h2>
       {!voucher && (
-        <form action={assign} className="flex justify-center">
-          <button className="btn-cta">Assign me a voucher</button>
+        <form action={assign} className="flex justify-center w-full">
+          <button className="btn-cta w-full sm:w-auto">Assign me a voucher</button>
         </form>
       )}
       {voucher && (
         <div className="space-y-2 max-w-md mx-auto">
           <div>Voucher: ••••••••••</div>
           <form action="/api/voucher/reveal" method="post">
-            <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Reveal code</button>
+            <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded w-full sm:w-auto">Reveal code</button>
           </form>
         </div>
       )}

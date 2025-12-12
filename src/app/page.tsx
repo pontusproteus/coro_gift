@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 
 export default async function Page() {
+  await new Promise(resolve => setTimeout(resolve, 600))
   const session = await getServerSession(authOptions)
   const user = session ? await prisma.user.findUnique({ where: { discordUserId: (session.user as any).discordUserId } }) : null
   const voucher = user ? await prisma.voucher.findFirst({ where: { assignedUserId: user.id } }) : null
@@ -28,26 +29,26 @@ export default async function Page() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col items-center justify-center gap-4 pt-6">
-        <Image src="/santa-coro.png" alt="Coro-mmunity Xmas Giveaway" width={260} height={260} className="rounded-lg shadow-2xl" />
+        <Image src="/santa-coro.png" alt="Coro-mmunity Xmas Giveaway" width={260} height={260} className="rounded-lg shadow-2xl w-3/4 sm:w-[260px] h-auto" sizes="(max-width: 640px) 75vw, 260px" />
       </div>
       {!session && (
-        <a href="/api/auth/signin/discord" className="inline-block btn-primary">Login with Discord</a>
+        <a href="/api/auth/signin/discord" className="inline-block btn-primary w-full sm:w-auto">Login with Discord</a>
       )}
       {session && (
         <>
         {!voucher && (
-          <form action={assign} className="flex justify-center">
-            <button className="btn-cta">Secure the bag 💼🎁</button>
+          <form action={assign} className="flex justify-center w-full">
+            <button className="btn-cta w-full sm:w-auto">Secure the bag 💼🎁</button>
           </form>
         )}
         {voucher && (
           <div className="space-y-3 max-w-md mx-auto">
             <div className="flex justify-center">
-              <div className="btn-cta inline-block">Bag secured ❄️</div>
+              <div className="btn-cta inline-block w-full sm:w-auto">Bag secured ❄️</div>
             </div>
             <div>Voucher: ••••••••••</div>
             <form action="/api/voucher/reveal" method="post">
-              <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Reveal code</button>
+              <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded w-full sm:w-auto">Reveal code</button>
             </form>
           </div>
         )}

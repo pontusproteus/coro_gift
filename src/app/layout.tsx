@@ -7,6 +7,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <title>Coro-mmunity Xmas Giveaway 🎄🎁</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body className="min-h-screen brand-gradient text-white">
         <header className="border-b border-red-700/40">
@@ -15,7 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">🎄 Coro-mmunity Xmas Giveaway ❄️🎁</h1>
           </div>
         </header>
-        <main className="max-w-3xl mx-auto p-6 text-center">
+        <main className="max-w-md sm:max-w-3xl mx-auto p-4 sm:p-6 text-center">
           {children}
         </main>
         <div className="snow" aria-hidden="true">

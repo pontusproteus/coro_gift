@@ -2,6 +2,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
 export default async function AdminPage() {
+  await new Promise(resolve => setTimeout(resolve, 600))
   const session = await getServerSession(authOptions)
   if (!session || !(session.user && (session.user as any).isAdmin)) return <div>Admin only</div>
   return (
@@ -24,6 +25,17 @@ export default async function AdminPage() {
           <div className="text-sm opacity-80">Provide either Discord User ID or Voucher ID.</div>
           <div className="flex justify-center">
             <button className="btn-secondary">Revoke</button>
+          </div>
+        </form>
+      </section>
+      <section className="space-y-2">
+        <h3 className="text-xl">Delete voucher</h3>
+        <form action="/api/vouchers/delete" method="post" className="card p-4 space-y-3 max-w-xl mx-auto">
+          <input name="discord_user_id" className="w-full text-black rounded px-3 py-2" placeholder="Discord User ID (optional)" />
+          <input name="voucher_id" className="w-full text-black rounded px-3 py-2" placeholder="Voucher ID (optional)" />
+          <div className="text-sm opacity-80">Provide either Discord User ID or Voucher ID.</div>
+          <div className="flex justify-center">
+            <button className="btn-secondary">Delete</button>
           </div>
         </form>
       </section>
