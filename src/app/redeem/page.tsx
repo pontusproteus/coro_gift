@@ -1,17 +1,33 @@
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { redirect } from 'next/navigation'
 
 export default async function RedeemPage() {
   const session = await getServerSession(authOptions)
   if (!session) return <div>Login required</div>
   const user = await prisma.user.findUnique({ where: { discordUserId: (session.user as any).discordUserId } })
   const voucher = user ? await prisma.voucher.findFirst({ where: { assignedUserId: user.id } }) : null
+  async function assign() {
+    'use server'
+    const sessionLocal = await getServerSession(authOptions)
+    if (!sessionLocal) return
+    const usr = await prisma.user.findUnique({ where: { discordUserId: (sessionLocal.user as any).discordUserId } })
+    if (!usr) return
+    const existing = await prisma.voucher.findFirst({ where: { assignedUserId: usr.id } })
+    if (existing) return redirect('/redeem')
+    const available = await prisma.voucher.findFirst({ where: { status: 'available' } })
+    if (!available) return redirect('/no-vouchers')
+    try {
+      await prisma.voucher.update({ where: { id: available.id }, data: { status: 'assigned', assignedUserId: usr.id, assignedAt: new Date() } })
+    } catch {}
+    return redirect('/redeem')
+  }
   return (
     <div className="space-y-4">
       <h2 className="text-2xl">Redeem voucher</h2>
       {!voucher && (
-        <form action="/api/redeem" method="post">
+        <form action={assign}>
           <button className="bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded">Assign me a voucher</button>
         </form>
       )}

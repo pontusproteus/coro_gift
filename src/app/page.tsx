@@ -6,9 +6,11 @@ export default async function Page() {
   const session = await getServerSession(authOptions)
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-semibold">Secret Santa</h1>
+      <div className="card p-6">
+        <p className="text-lg">Welcome to the Coro-mmunity Secret Santa. Login to join, redeem your voucher, and see who you’ll be gifting!</p>
+      </div>
       {!session && (
-        <a href="/api/auth/signin/discord" className="inline-block bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded">Login with Discord</a>
+        <a href="/api/auth/signin/discord" className="inline-block btn-primary">Login with Discord</a>
       )}
       {session && (
         <div className="space-x-3">

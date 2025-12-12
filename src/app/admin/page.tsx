@@ -9,20 +9,19 @@ export default async function AdminPage() {
       <h2 className="text-2xl">Admin</h2>
       <section className="space-y-2">
         <h3 className="text-xl">Upload vouchers</h3>
-        <form action="/api/vouchers/upload" method="post">
-          <textarea name="csv" className="w-full h-40 text-black" placeholder="code,value_amount,currency"></textarea>
-          <div className="mt-2">
-            <button className="bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded">Upload</button>
+        <form action="/api/vouchers/upload" method="post" className="card p-4 space-y-3">
+          <textarea name="csv" className="w-full h-40 text-black rounded" placeholder="code,value_amount,currency"></textarea>
+          <div className="flex justify-end">
+            <button className="btn-primary">Upload</button>
           </div>
         </form>
       </section>
       <section className="space-y-2">
         <h3 className="text-xl">Run matching</h3>
-        <form action="/api/matching/run" method="post">
-          <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Generate matches</button>
+        <form action="/api/matching/run" method="post" className="card p-4">
+          <button className="btn-secondary">Generate matches</button>
         </form>
       </section>
     </div>
   )
 }
-
