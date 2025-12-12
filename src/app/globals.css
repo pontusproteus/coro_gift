@@ -21,3 +21,36 @@ html, body {
 .btn-secondary {
   @apply bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded;
 }
+
+.btn-cta {
+  @apply bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg text-xl;
+}
+
+.snow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.snow .flake {
+  position: absolute;
+  top: -10vh;
+  left: var(--x);
+  width: var(--size);
+  height: var(--size);
+  background: radial-gradient(circle at 30% 30%, #fff 0%, #fff 60%, rgba(255,255,255,0.85) 60%, rgba(255,255,255,0.85) 100%);
+  border-radius: 9999px;
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.6));
+  animation-name: snowDown;
+  animation-duration: var(--duration);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes snowDown {
+  0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translateY(110vh) translateX(10vw) rotate(360deg); opacity: 1; }
+}

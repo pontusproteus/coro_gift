@@ -25,10 +25,10 @@ export default async function RedeemPage() {
   }
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl">Redeem voucher</h2>
+      <h2 className="text-2xl">Secure the bag</h2>
       {!voucher && (
         <form action={assign}>
-          <button className="bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded">Assign me a voucher</button>
+          <button className="btn-cta">Assign me a voucher</button>
         </form>
       )}
       {voucher && (
