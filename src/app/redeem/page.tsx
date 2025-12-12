@@ -24,15 +24,15 @@ export default async function RedeemPage() {
     return redirect('/redeem')
   }
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 text-center">
       <h2 className="text-2xl">Secure the bag</h2>
       {!voucher && (
-        <form action={assign}>
+        <form action={assign} className="flex justify-center">
           <button className="btn-cta">Assign me a voucher</button>
         </form>
       )}
       {voucher && (
-        <div className="space-y-2">
+        <div className="space-y-2 max-w-md mx-auto">
           <div>Voucher: ••••••••••</div>
           <form action="/api/voucher/reveal" method="post">
             <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Reveal code</button>

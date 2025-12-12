@@ -2,22 +2,53 @@ import Link from 'next/link'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import Image from 'next/image'
+import { prisma } from '@/lib/prisma'
 
 export default async function Page() {
   const session = await getServerSession(authOptions)
+  const user = session ? await prisma.user.findUnique({ where: { discordUserId: (session.user as any).discordUserId } }) : null
+  const voucher = user ? await prisma.voucher.findFirst({ where: { assignedUserId: user.id } }) : null
+  async function assign() {
+    'use server'
+    const sessionLocal = await getServerSession(authOptions)
+    if (!sessionLocal) return
+    const usr = await prisma.user.findUnique({ where: { discordUserId: (sessionLocal.user as any).discordUserId } })
+    if (!usr) return
+    const existing = await prisma.voucher.findFirst({ where: { assignedUserId: usr.id } })
+    if (existing) return
+    const available = await prisma.voucher.findFirst({ where: { status: 'available' } })
+    if (!available) return
+    try {
+      await prisma.voucher.update({ where: { id: available.id }, data: { status: 'assigned', assignedUserId: usr.id, assignedAt: new Date() } })
+    } catch {}
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col items-center justify-center gap-4 pt-6">
-        <Image src="/santa-coro.png" alt="coro-mmunity christmas giveaway" width={260} height={260} className="rounded-lg shadow-2xl" />
+        <Image src="/santa-coro.png" alt="Coro-mmunity Xmas Giveaway" width={260} height={260} className="rounded-lg shadow-2xl" />
       </div>
       {!session && (
         <a href="/api/auth/signin/discord" className="inline-block btn-primary">Login with Discord</a>
       )}
       {session && (
         <>
-        <div className="flex justify-center">
-          <Link href="/redeem" className="btn-cta">Secure the bag</Link>
-        </div>
+        {!voucher && (
+          <form action={assign} className="flex justify-center">
+            <button className="btn-cta">Secure the bag 💼🎁</button>
+          </form>
+        )}
+        {voucher && (
+          <div className="space-y-3 max-w-md mx-auto">
+            <div className="flex justify-center">
+              <div className="btn-cta inline-block">Bag secured ❄️</div>
+            </div>
+            <div>Voucher: ••••••••••</div>
+            <form action="/api/voucher/reveal" method="post">
+              <button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Reveal code</button>
+            </form>
+          </div>
+        )}
         <div className="space-x-3 text-center pt-2">
           {session.user && (session.user as any).isAdmin && (
             <Link href="/admin" className="underline">Admin</Link>
@@ -26,20 +57,6 @@ export default async function Page() {
         </div>
         </>
       )}
-      <div className="snow">
-        <span className="flake" style={{ ['--x' as any]: '5%', ['--size' as any]: '8px', ['--duration' as any]: '12s', ['--delay' as any]: '0s' }} />
-        <span className="flake" style={{ ['--x' as any]: '12%', ['--size' as any]: '10px', ['--duration' as any]: '14s', ['--delay' as any]: '2s' }} />
-        <span className="flake" style={{ ['--x' as any]: '20%', ['--size' as any]: '6px', ['--duration' as any]: '11s', ['--delay' as any]: '1s' }} />
-        <span className="flake" style={{ ['--x' as any]: '28%', ['--size' as any]: '9px', ['--duration' as any]: '13s', ['--delay' as any]: '3s' }} />
-        <span className="flake" style={{ ['--x' as any]: '36%', ['--size' as any]: '7px', ['--duration' as any]: '12s', ['--delay' as any]: '4s' }} />
-        <span className="flake" style={{ ['--x' as any]: '44%', ['--size' as any]: '8px', ['--duration' as any]: '10s', ['--delay' as any]: '2s' }} />
-        <span className="flake" style={{ ['--x' as any]: '52%', ['--size' as any]: '11px', ['--duration' as any]: '15s', ['--delay' as any]: '1s' }} />
-        <span className="flake" style={{ ['--x' as any]: '60%', ['--size' as any]: '7px', ['--duration' as any]: '12s', ['--delay' as any]: '0.5s' }} />
-        <span className="flake" style={{ ['--x' as any]: '68%', ['--size' as any]: '10px', ['--duration' as any]: '13s', ['--delay' as any]: '2.5s' }} />
-        <span className="flake" style={{ ['--x' as any]: '76%', ['--size' as any]: '6px', ['--duration' as any]: '11s', ['--delay' as any]: '1.5s' }} />
-        <span className="flake" style={{ ['--x' as any]: '84%', ['--size' as any]: '9px', ['--duration' as any]: '12s', ['--delay' as any]: '3.5s' }} />
-        <span className="flake" style={{ ['--x' as any]: '92%', ['--size' as any]: '8px', ['--duration' as any]: '14s', ['--delay' as any]: '2s' }} />
-      </div>
     </div>
   )
 }
