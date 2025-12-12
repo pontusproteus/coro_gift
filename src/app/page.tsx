@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import Image from 'next/image'
 import { prisma } from '@/lib/prisma'
+import { redirect } from 'next/navigation'
 
 export default async function Page() {
   const session = await getServerSession(authOptions)
@@ -17,10 +18,11 @@ export default async function Page() {
     const existing = await prisma.voucher.findFirst({ where: { assignedUserId: usr.id } })
     if (existing) return
     const available = await prisma.voucher.findFirst({ where: { status: 'available' } })
-    if (!available) return
+    if (!available) return redirect('/no-vouchers')
     try {
       await prisma.voucher.update({ where: { id: available.id }, data: { status: 'assigned', assignedUserId: usr.id, assignedAt: new Date() } })
     } catch {}
+    return redirect('/')
   }
 
   return (
