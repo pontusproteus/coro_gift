@@ -8,7 +8,7 @@ export default async function Page() {
     <div className="space-y-6">
       <h1 className="text-3xl font-semibold">Secret Santa</h1>
       {!session && (
-        <a href="/api/auth/signin" className="inline-block bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded">Login with Discord</a>
+        <a href="/api/auth/signin/discord" className="inline-block bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded">Login with Discord</a>
       )}
       {session && (
         <div className="space-x-3">
@@ -23,4 +23,3 @@ export default async function Page() {
     </div>
   )
 }
-

@@ -23,11 +23,13 @@ export const authOptions: NextAuthOptions = {
         const username = (profile as any).global_name || (profile as any).username || ''
         const avatarUrl = (profile as any).avatar ? `https://cdn.discordapp.com/avatars/${discordId}/${(profile as any).avatar}.png` : null
         const admin = isAdminDiscord(discordId)
-        await prisma.user.upsert({
-          where: { discordUserId: discordId },
-          update: { username, avatarUrl: avatarUrl || undefined, isAdmin: admin },
-          create: { discordUserId: discordId, username, avatarUrl: avatarUrl || undefined, isAdmin: admin }
-        })
+        try {
+          await prisma.user.upsert({
+            where: { discordUserId: discordId },
+            update: { username, avatarUrl: avatarUrl || undefined, isAdmin: admin },
+            create: { discordUserId: discordId, username, avatarUrl: avatarUrl || undefined, isAdmin: admin }
+          })
+        } catch {}
         token.isAdmin = admin
       }
       return token
@@ -38,9 +40,6 @@ export const authOptions: NextAuthOptions = {
       return session
     }
   },
-  pages: {
-    signIn: '/'
-  },
   session: {
     strategy: 'jwt'
   },
@@ -48,4 +47,3 @@ export const authOptions: NextAuthOptions = {
 }
 
 export const { handlers: authHandlers } = NextAuth(authOptions)
-
