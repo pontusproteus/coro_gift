@@ -7,7 +7,7 @@ export default async function Page() {
   return (
     <div className="space-y-6">
       <div className="card p-6">
-        <p className="text-lg">Welcome to the Coro-mmunity Secret Santa. Login to join, redeem your voucher, and see who you’ll be gifting!</p>
+        <p className="text-lg">Welcome to the Coro-mmunity Secret Santa. Login to join and redeem your voucher.</p>
       </div>
       {!session && (
         <a href="/api/auth/signin/discord" className="inline-block btn-primary">Login with Discord</a>
@@ -15,7 +15,6 @@ export default async function Page() {
       {session && (
         <div className="space-x-3">
           <Link href="/redeem" className="underline">Redeem voucher</Link>
-          <Link href="/match" className="underline">View match</Link>
           {session.user && (session.user as any).isAdmin && (
             <Link href="/admin" className="underline">Admin</Link>
           )}

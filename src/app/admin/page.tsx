@@ -16,12 +16,6 @@ export default async function AdminPage() {
           </div>
         </form>
       </section>
-      <section className="space-y-2">
-        <h3 className="text-xl">Run matching</h3>
-        <form action="/api/matching/run" method="post" className="card p-4">
-          <button className="btn-secondary">Generate matches</button>
-        </form>
-      </section>
     </div>
   )
 }
