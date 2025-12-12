@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen brand-gradient text-white">
         <header className="border-b border-red-700/40">
           <div className="max-w-3xl mx-auto px-6 py-5 flex items-center justify-center gap-3 text-center">
-            <Image src="/santa-coro.png" alt="Coro-mmunity Xmas Giveaway" width={56} height={56} className="rounded shadow-md" />
+            <Image src="/santa-coro.png" alt="Coro-mmunity Xmas Giveaway" width={56} height={56} className="rounded shadow-md fade-in" />
             <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">🎄 Coro-mmunity Xmas Giveaway ❄️🎁</h1>
           </div>
         </header>
