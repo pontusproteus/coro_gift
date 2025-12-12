@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String  @id @default(cuid())
+  discordUserId    String  @unique
+  username         String?
+  avatarUrl        String?
+  isAdmin          Boolean @default(false)
+  createdAt        DateTime @default(now())
+  voucher          Voucher?
+  matchesGiven     Match[] @relation("giver")
+  matchesReceived  Match[] @relation("receiver")
+}
+
+model Voucher {
+  id               String   @id @default(cuid())
+  codeCiphertext   String
+  valueAmount      Int
+  currency         String
+  status           VoucherStatus @default(available)
+  assignedUserId   String?  @unique
+  assignedUser     User?    @relation(fields: [assignedUserId], references: [id])
+  uploadedByAdminId String?
+  assignedAt       DateTime?
+  redeemedAt       DateTime?
+  views            VoucherView[]
+  createdAt        DateTime @default(now())
+}
+
+model Round {
+  id         String   @id @default(cuid())
+  name       String
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  matches    Match[]
+}
+
+model Match {
+  id            String   @id @default(cuid())
+  roundId       String
+  round         Round    @relation(fields: [roundId], references: [id])
+  giverUserId   String
+  receiverUserId String
+  giver         User     @relation("giver", fields: [giverUserId], references: [id])
+  receiver      User     @relation("receiver", fields: [receiverUserId], references: [id])
+  status        MatchStatus @default(pending)
+  createdAt     DateTime @default(now())
+
+  @@unique([roundId, giverUserId])
+}
+
+model VoucherView {
+  id            String   @id @default(cuid())
+  voucherId     String
+  voucher       Voucher  @relation(fields: [voucherId], references: [id])
+  viewerUserId  String
+  viewedAt      DateTime @default(now())
+  ipHash        String?
+}
+
+enum VoucherStatus {
+  available
+  assigned
+  redeemed
+}
+
+enum MatchStatus {
+  pending
+  notified
+  confirmed
+}
+
